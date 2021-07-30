@@ -4,7 +4,7 @@ utf8.decode: The world's slowest UTF-8 decoder
 Crated only to demonstrate one (mis)use of pattern matching in Python.
 
 Also may be useful as executable pseudocode to explain how
-the UTF-8 encoding/decoding algorithm work.
+the UTF-8 encoding/decoding algorithm works.
 
 Maybe one day we can have an efficient syntax for matching bit patterns,
 like Erlang has:
