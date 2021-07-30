@@ -37,6 +37,7 @@ def test_encode(expected):
     got = encode(expected)
     assert got == expected.encode('utf8')
 
+@pytest.mark.slow
 def test_encode_all_chars():
     codes = range(0, sys.maxunicode + 1)
     for char in (chr(c) for c in codes):
@@ -46,6 +47,7 @@ def test_encode_all_chars():
             continue  # skip surrogates
         assert encode(char) == octets
 
+@pytest.mark.slow
 def test_decode_all_chars():
     codes = range(0, sys.maxunicode + 1)
     for char in (chr(c) for c in codes):
