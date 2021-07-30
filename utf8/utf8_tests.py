@@ -56,3 +56,19 @@ def test_decode_all_chars():
         except UnicodeEncodeError:
             continue  # skip surrogates
         assert decode(octets) == char
+
+
+def test_invalid_bit_pattern():
+    expected = 'Invalid UTF-8 bit pattern: 1000_0000'
+    with pytest.raises(ValueError) as excinfo:
+        decode(bytes([0b1000_0000]))
+    assert expected in str(excinfo.value)
+
+
+def test_incomplete_byte_sequence():
+    expected = 'Incomplete UTF-8 byte sequence'
+    with pytest.raises(ValueError) as excinfo:
+        decode(bytes([0b1100_0000]))
+    assert expected in str(excinfo.value)
+
+
