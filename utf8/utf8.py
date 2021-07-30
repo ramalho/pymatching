@@ -1,15 +1,19 @@
 """
-utf8.decode: The world's slowest UTF-8 decoder
+utf8.decode(…): The world's slowest UTF-8 decoder function.
 
 Crated only to demonstrate one (mis)use of pattern matching in Python.
 
-Also may be useful as executable pseudocode to explain how
-the UTF-8 encoding/decoding algorithm works.
+Also may be useful as executable pseudocode to explain how the UTF-8
+encoding/decoding algorithm works.
 
-Maybe one day we can have an efficient syntax for matching bit patterns,
-like Erlang has:
+Maybe one day Python can have a syntax for efficient pattern matching
+of bit patterns, like Erlang has:
 
 https://erlang.org/doc/programming_examples/bit_syntax.html
+
+Meanwhile, this example expands bytes into lists of bits.
+That makes everything super slow, but allows the use of
+`match/case` with a list of bits as the subject.
 
 """
 
