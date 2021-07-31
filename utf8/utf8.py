@@ -18,9 +18,14 @@ bits. That makes everything super slow, but allows the use of
 The `encode` function is not as slow.
 
 Anyway, this kind of bit twiddling is much faster in C, Rust,
-Go, Pascal, etc.--basically, any language that compiles to
-machine code--because the bit-level operations are native
-instructions in any real CPU.
+Go, Pascal, etc. (basically, any language that compiles to
+machine code) because the bitwise operations `>>`, `|`,
+`&` are native instructions in any real CPU.
+
+Rewriting `decode` to use bitwise operators is left as an
+exercise for the reader. My goal was to see how `decode`
+would look like using pattern matching.
+
 """
 
 def unpack(octet: int, width: int = 8) -> list[int]:
