@@ -42,20 +42,20 @@ def decode(octets: bytes) -> str:
             break
         try:
             match bits:
-                case [0, *rest]:                    # 0xxx_xxxx
-                    out_bits = rest                 # -> 7 bits
+                case [0, *rest]:                    # 0xxx_xxxx -> 7 bits
+                    out_bits = rest
                 case [1, 1, 0, *head]:              # 110x_xxxx
-                    tail = unpack(next(stream), 6)  # 10xx_xxxx
-                    out_bits = head + tail          # -> 11 bits
+                    tail = unpack(next(stream), 6)  # 10xx_xxxx -> 11 bits
+                    out_bits = head + tail
                 case [1, 1, 1, 0, *head]:           # 1110_xxxx
-                    t0 = unpack(next(stream), 6)    # 10xx_xxxx
-                    t1 = unpack(next(stream), 6)    # 10xx_xxxx
-                    out_bits = head + t0 + t1       # -> 16 bits
+                    body = unpack(next(stream), 6)  # 10xx_xxxx
+                    tail = unpack(next(stream), 6)  # 10xx_xxxx -> 16 bits
+                    out_bits = head + body + tail
                 case [1, 1, 1, 1, 0, *head]:        # 1111_0xxx
-                    t0 = unpack(next(stream), 6)    # 10xx_xxxx
-                    t1 = unpack(next(stream), 6)    # 10xx_xxxx
-                    t2 = unpack(next(stream), 6)    # 10xx_xxxx
-                    out_bits = head + t0 + t1 + t2  # -> 21 bits
+                    neck = unpack(next(stream), 6)  # 10xx_xxxx
+                    body = unpack(next(stream), 6)  # 10xx_xxxx
+                    tail = unpack(next(stream), 6)  # 10xx_xxxx -> 21 bits
+                    out_bits = head + neck + body + tail
                 case _:
                     bit_str = f'{pack(bits):_b}'
                     raise ValueError(f'Invalid UTF-8 start pattern: {bit_str}')
