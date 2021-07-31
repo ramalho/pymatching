@@ -42,20 +42,24 @@ def decode(octets: bytes) -> str:
             break
         try:
             match bits:
-                case [0, *rest]:
-                    out_bits = rest
-                case [1, 1, 0, *rest]:
-                    tail = unpack(next(stream), 6)
-                    out_bits = rest + tail
-                case [1, 1, 1, 0, *rest]:
-                    t0 = unpack(next(stream), 6)
-                    t1 = unpack(next(stream), 6)
-                    out_bits = rest + t0 + t1
-                case [1, 1, 1, 1, 0, *rest]:
-                    t0 = unpack(next(stream), 6)
-                    t1 = unpack(next(stream), 6)
-                    t2 = unpack(next(stream), 6)
-                    out_bits = rest + t0 + t1 + t2
+                case [0, *rest]:                    # 0xxx_xxxx
+                    out_bits = rest                 # -> 7 code bits
+
+                case [1, 1, 0, *rest]:              # 110x_xxxx
+                    tail = unpack(next(stream), 6)  # 10xx_xxxx
+                    out_bits = rest + tail          # -> 11 code bits
+
+                case [1, 1, 1, 0, *rest]:           # 1110_xxxx
+                    t0 = unpack(next(stream), 6)    # 10xx_xxxx
+                    t1 = unpack(next(stream), 6)    # 10xx_xxxx
+                    out_bits = rest + t0 + t1       # -> 16 code bits
+
+                case [1, 1, 1, 1, 0, *rest]:        # 1111_0xxx
+                    t0 = unpack(next(stream), 6)    # 10xx_xxxx
+                    t1 = unpack(next(stream), 6)    # 10xx_xxxx
+                    t2 = unpack(next(stream), 6)    # 10xx_xxxx
+                    out_bits = rest + t0 + t1 + t2  # -> 21 code bits
+
                 case _:
                     raise ValueError(f'Invalid UTF-8 bit pattern: {pack(bits):_b}')
         except StopIteration:
@@ -70,20 +74,20 @@ def encode(text: str) -> bytes:
     for char in text:
         code = ord(char)
         if code < 0x80:
-            out.append(code)
+            out.append(code)  # 0xxx_xxxx
         elif 0x80 <= code < 0x800:
-            head = code >> 6 | 0b1100_0000
-            tail = code & 0b11_1111 | 0b1000_0000
+            head = code >> 6 | 0b1100_0000         # 110x_xxxx
+            tail = code & 0b11_1111 | 0b1000_0000  # 10xx_xxxx
             out.extend([head, tail])
         elif 0x800 <= code < 0x1_0000:
-            head = code >> 12 | 0b1110_0000
-            middle = code >> 6 & 0b11_1111 | 0b1000_0000
-            tail = code & 0b11_1111 | 0b1000_0000
+            head = code >> 12 | 0b1110_0000               # 1110_xxxx
+            middle = code >> 6 & 0b11_1111 | 0b1000_0000  # 10xx_xxxx
+            tail = code & 0b11_1111 | 0b1000_0000         # 10xx_xxxx
             out.extend([head, middle, tail])
         else:
-            head = code >> 18 | 0b1111_0000
-            neck = code >> 12 & 0b11_1111 | 0b1000_0000
-            middle = code >> 6 & 0b11_1111 | 0b1000_0000
-            tail = code & 0b11_1111 | 0b1000_0000
+            head = code >> 18 | 0b1111_0000               # 1111_0xxx
+            neck = code >> 12 & 0b11_1111 | 0b1000_0000   # 10xx_xxxx
+            middle = code >> 6 & 0b11_1111 | 0b1000_0000  # 10xx_xxxx
+            tail = code & 0b11_1111 | 0b1000_0000         # 10xx_xxxx
             out.extend([head, neck, middle, tail])
     return bytes(out)
