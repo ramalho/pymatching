@@ -43,29 +43,24 @@ def decode(octets: bytes) -> str:
         try:
             match bits:
                 case [0, *rest]:                    # 0xxx_xxxx
-                    out_bits = rest                 # -> 7 code bits
-
+                    out_bits = rest                 # -> 7 bits
                 case [1, 1, 0, *rest]:              # 110x_xxxx
                     tail = unpack(next(stream), 6)  # 10xx_xxxx
-                    out_bits = rest + tail          # -> 11 code bits
-
+                    out_bits = rest + tail          # -> 11 bits
                 case [1, 1, 1, 0, *rest]:           # 1110_xxxx
                     t0 = unpack(next(stream), 6)    # 10xx_xxxx
                     t1 = unpack(next(stream), 6)    # 10xx_xxxx
-                    out_bits = rest + t0 + t1       # -> 16 code bits
-
+                    out_bits = rest + t0 + t1       # -> 16 bits
                 case [1, 1, 1, 1, 0, *rest]:        # 1111_0xxx
                     t0 = unpack(next(stream), 6)    # 10xx_xxxx
                     t1 = unpack(next(stream), 6)    # 10xx_xxxx
                     t2 = unpack(next(stream), 6)    # 10xx_xxxx
-                    out_bits = rest + t0 + t1 + t2  # -> 21 code bits
-
+                    out_bits = rest + t0 + t1 + t2  # -> 21 bits
                 case _:
                     raise ValueError(f'Invalid UTF-8 bit pattern: {pack(bits):_b}')
         except StopIteration:
             raise ValueError('Incomplete UTF-8 byte sequence')
         out.append(chr(pack(out_bits)))
-
     return ''.join(out)
 
 
