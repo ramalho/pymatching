@@ -69,8 +69,8 @@ def encode(text: str) -> bytes:
     out = bytearray()
     for char in text:
         code = ord(char)
-        if code < 0x80:
-            out.append(code)                             # 0xxx_xxxx
+        if code < 0x80:                                  # 0xxx_xxxx
+            out.append(code)
         elif 0x80 <= code < 0x800:
             head = code >> 6 | 0b1100_0000               # 110x_xxxx
             tail = code & 0b11_1111 | 0b1000_0000        # 10xx_xxxx
