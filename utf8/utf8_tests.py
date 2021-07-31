@@ -37,29 +37,9 @@ def test_encode(expected):
     got = encode(expected)
     assert got == expected.encode('utf8')
 
-@pytest.mark.slow
-def test_encode_all_chars():
-    codes = range(0, sys.maxunicode + 1)
-    for char in (chr(c) for c in codes):
-        try:
-            octets = char.encode('utf8')
-        except UnicodeEncodeError:
-            continue  # skip surrogates
-        assert encode(char) == octets
-
-@pytest.mark.slow
-def test_decode_all_chars():
-    codes = range(0, sys.maxunicode + 1)
-    for char in (chr(c) for c in codes):
-        try:
-            octets = char.encode('utf8')
-        except UnicodeEncodeError:
-            continue  # skip surrogates
-        assert decode(octets) == char
-
 
 def test_invalid_bit_pattern():
-    expected = 'Invalid UTF-8 bit pattern: 1000_0000'
+    expected = 'Invalid UTF-8 start pattern: 1000_0000'
     with pytest.raises(ValueError) as excinfo:
         decode(bytes([0b1000_0000]))
     assert expected in str(excinfo.value)
@@ -70,5 +50,27 @@ def test_incomplete_byte_sequence():
     with pytest.raises(ValueError) as excinfo:
         decode(bytes([0b1100_0000]))
     assert expected in str(excinfo.value)
+
+
+@pytest.mark.slow
+def test_encode_all_chars():
+    codes = range(0, sys.maxunicode + 1)
+    for char in (chr(c) for c in codes):
+        try:
+            octets = char.encode('utf8')
+        except UnicodeEncodeError:
+            continue  # skip surrogates
+        assert encode(char) == octets
+
+
+@pytest.mark.slow
+def test_decode_all_chars():
+    codes = range(0, sys.maxunicode + 1)
+    for char in (chr(c) for c in codes):
+        try:
+            octets = char.encode('utf8')
+        except UnicodeEncodeError:
+            continue  # skip surrogates
+        assert decode(octets) == char
 
 

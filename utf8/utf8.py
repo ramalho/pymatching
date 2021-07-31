@@ -57,7 +57,8 @@ def decode(octets: bytes) -> str:
                     t2 = unpack(next(stream), 6)    # 10xx_xxxx
                     out_bits = head + t0 + t1 + t2  # -> 21 bits
                 case _:
-                    raise ValueError(f'Invalid UTF-8 bit pattern: {pack(bits):_b}')
+                    bit_str = f'{pack(bits):_b}'
+                    raise ValueError(f'Invalid UTF-8 start pattern: {bit_str}')
         except StopIteration:
             raise ValueError('Incomplete UTF-8 byte sequence')
         out.append(chr(pack(out_bits)))
