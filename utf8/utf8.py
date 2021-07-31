@@ -19,10 +19,10 @@ That makes everything super slow, but allows the use of
 
 def unpack(octet: int, width: int = 8) -> list[int]:
     bits = [0] * width
-    for i in range(width):
+    for i in reversed(range(width)):
         bits[i] = octet & 1
         octet >>= 1
-    return list(reversed(bits))
+    return bits
 
 
 def pack(bits: list[int]) -> int:
