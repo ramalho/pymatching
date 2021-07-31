@@ -17,9 +17,10 @@ bits. That makes everything super slow, but allows the use of
 
 The `encode` function is not as slow.
 
-Either way kind of bit twiddling is much faster in C, Go, Rust,
-etc.--any real language that compiles to machine code.
-
+Anyway, this kind of bit twiddling is much faster in C, Rust,
+Go, Pascal, etc.--basically, any language that compiles to
+machine code--because the bit-level operations are native
+instructions in any real CPU.
 """
 
 def unpack(octet: int, width: int = 8) -> list[int]:
