@@ -11,9 +11,14 @@ of bit patterns, like Erlang has:
 
 https://erlang.org/doc/programming_examples/bit_syntax.html
 
-Meanwhile, this example expands bytes into lists of bits.
-That makes everything super slow, but allows the use of
+Meanwhile, the `decode` function expands bytes into lists of
+bits. That makes everything super slow, but allows the use of
 `match/case` with a list of bits as the subject.
+
+The `encode` function is not as slow.
+
+Either way kind of bit twiddling is much faster in C, Go, Rust,
+etc.--any real language that compiles to machine code.
 
 """
 
